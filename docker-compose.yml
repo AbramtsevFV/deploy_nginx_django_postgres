@@ -1,0 +1,64 @@
+version: '3'
+
+# хранилища
+volumes:
+    pgdata:
+        driver: local
+services:
+    nginx:
+# при падении будет стараться подняться
+        restart: always
+# только свежий nginx
+        image: nginx:latest
+        # локальный запуск
+#        expose:
+#            - 8080
+#        ports:
+#            - "80:8080"
+
+        # Деплой
+# слушает порт 80
+        expose:
+          - 80
+        ports:
+          - "80:80"
+          - "443:443"
+# Монтируем только те директории, в которых лежит статика. Также директорию с логами и файл настройки.
+        volumes:
+            - ./photo_load/static:/srv/www/photo_load/static
+            - ./photo_load/media:/srv/www/photo_load/media
+            - ./photo_load/logs:/srv/www/photo_load/logs
+            - ./docker/nginx:/etc/nginx/conf.d
+# и nginx зависит от контейнера python. Т.е. python должен быть запущен первым
+        depends_on:
+            - python
+    python:
+        restart: always
+# указываем откуда собирать образ
+        build:
+            context: .
+            dockerfile: docker/python/Dockerfile
+# монтируем директорию проекта
+        volumes:
+            - ./photo_load:/srv/www/photo_load
+        expose:
+          - 8000
+        ports:
+             - 8000:8000
+# запускаем gunicorn
+        command: "gunicorn -c gunicorn.py photo.wsgi"
+        depends_on:
+            - db_postgres
+    db_postgres:
+
+        image: postgres
+        ports:
+            - 5432:5432
+        environment:
+           - POSTGRES_NAME=postgres
+           - POSTGRES_USER=postgres
+           - POSTGRES_PASSWORD=postgres
+#        volumes:
+#            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - pgdata:/var/lib/postgresql/data

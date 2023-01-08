@@ -1,0 +1,30 @@
+{% extends 'loader/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <div class="container d-flex h-100 flex-column">
+        <div class="row">
+            <div class="col py-3">
+              <img src={% static "assets/images/logo.svg"  %} />
+            </div>
+          </div>
+        <div class="row flex-grow-1 justify-content-center">
+            <div class="col-md-6 col-12 d-flex flex-column justify-content-center">
+                <div class="main-text">
+                    <div class="image-holder mb-3">
+                    <img src="{{img_obj.image.url}}" />
+                    </div>
+
+                  <p class="text-center">На фото поза собаки</p>
+                   <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+                  {% csrf_token %}
+                       {{ form.image }}
+                   <p class="text-center"> <button type="button"  id="file_l" class="btn btn-secondary" onclick="document.getElementById('id_image').click();">Загрузить фото</button></p>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock content %}

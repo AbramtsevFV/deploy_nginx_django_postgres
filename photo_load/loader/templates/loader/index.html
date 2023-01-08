@@ -1,0 +1,42 @@
+{% extends 'loader/base.html' %}
+{% load static %}
+
+{% block content %}
+<body class="main">
+    <div class="container d-flex h-100 flex-column">
+        <div class="row">
+            <div class="col py-3">
+              <img src={% static "assets/images/logo.svg"  %} />
+            </div>
+          </div>
+
+        <div class="row flex-grow-1">
+            <div class="col-md-6 col-12 d-flex flex-column justify-content-center">
+                <div class="main-text">
+                  <h1>Rama Yoga</h1>
+                  <p>Rama Yoga сможет распознать одну из поз на фото: Воин или Собака. Пожалуйста, загрузите ваше фото. На фото должны быть видны все конечности тела, камера не должна быть отдалена более чем на 2,5 метра.</p>
+
+                    <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+                        {% csrf_token %}
+                    {{ form.image }}
+                        <p class="text-center"> <button type="button"  id="file_l" class="btn btn-secondary" onclick="document.getElementById('id_image').click();">Загрузить фото</button></p>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+
+
+{#  <form method="post" enctype="multipart/form-data">#}
+{#  {% csrf_token %}#}
+{#   {{ form.as_p }}#}
+{#    <label for="file" class="btn btn-secondary">Загрузить фото</label>#}
+{#  <button type="submit">Загрузить</button>#}
+{#</form>#}
+
+
+{% endblock content %}
